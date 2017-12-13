@@ -1,3 +1,4 @@
+import os
 import argparse
 import matplotlib.pyplot as plt
 
@@ -30,6 +31,25 @@ def read_whole_file(input_path):
 
     return text
 
+def write_sequense(file, data):
+    file.write(''.join(map(str,data)))
+
+def write_tab_separated(file, data, header=None):
+    if header:
+        file.write('\t'.join(header) + '\n')
+
+    for row in data:
+        file.write('\t'.join(map(str,row)) + '\n')
+
+
+def write_to_file(output_path, data, sequence):
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, 'w+') as f:
+        if sequence:
+            write_sequense(f, data)
+        else:
+            write_tab_separated(f, data)
+
 
 def pick(d, keys):
     return {key or key_old: d[key_old] for key_old, key in keys }
@@ -41,40 +61,32 @@ def run(args):
     text = args['text'] or read_whole_file(args['file'])
     template = ( args['template_string'] if args['case_sensative'] else args['template_string'].lower() ).split()
 
-    params = pick(args, param_keys_map)
+    p_params = pick(args, param_keys_map)
     l_params = pick(args, l_param_keys_map)
 
-    analyse(text, args['mode'], l_params, template, preprocessor_params=params)
-
-
-def analyse(text, mode, l, template, preprocessor_params):
-
-    prep_text = preprocessor.prepare(text, mode, **preprocessor_params)
+    prep_text = preprocessor.prepare(text, args['mode'], **p_params)
 
     print('text legth: ',len(prep_text))
-
-    """
-    vocab = sorted(stats.vocab(prep_text))
-    freq = stats.relative_frequency(prep_text)
-
-    print(vocab)
     print()
-
-    for key in sorted(freq, key=lambda x: freq[x]):
-        print("{0}: {1:1.5f}".format(key, freq[key]))
-    """
-    print()
-
-    # print(prep_text)
 
     encoded_text = fluctuation.encode(prep_text, template)
 
-    # print(encoded_text)
+    if args['only_encode']:
+        if args['output_file']:
+            write_to_file(args['output_file'], encoded_text, True)
 
-    x = []
-    y = []
+        return encoded_text, None
 
-    l_full = len(encoded_text)
+    result, gamma = analyse(encoded_text, args['mode'], l_params, template)
+
+    if args['output_file']:
+        write_to_file(args['output_file'], result, False)
+
+    return result, gamma
+
+
+def analyse(text, mode, l, template):
+    l_full = len(text)
 
     min_l = int(l['l_min'] or l_full*l['l_min_rel'])
     max_l = int(l['l_max'] or l_full*l['l_max_rel'])
@@ -89,7 +101,7 @@ def analyse(text, mode, l, template, preprocessor_params):
     print('L\tmean\tstd')
 
     res = fluctuation.run(
-        encoded_text,
+        text,
         min_l, max_l,
         increment,
         int(l['step']),
@@ -97,13 +109,14 @@ def analyse(text, mode, l, template, preprocessor_params):
     )
 
     if len(res) < 3:
-        return res
+        return res, None
 
     res_plot = list(zip(*res))
 
     popt = fluctuation.get_gamma(res_plot[0], res_plot[2])
     print(popt)
-    print('\ngama: ', popt[0])
+    gamma = popt[0]
+    print('\ngama: ', gamma)
 
     plt.plot(res_plot[0], res_plot[2])
 
@@ -112,7 +125,7 @@ def analyse(text, mode, l, template, preprocessor_params):
 
     plt.show()
 
-    return res
+    return res, gamma
 
 
 if __name__ == '__main__':
@@ -124,9 +137,10 @@ if __name__ == '__main__':
 
         parser.add_argument('-i', action="store",       dest="text",                              help="input text")
         parser.add_argument('-f', action="store",       dest="file",                              help="path to file that should be used as input")
-        # parser.add_argument('-p', action="store_true",  dest="preprocessed",                       help="input is preprocessed and is a sequence of 0 and 1")
         parser.add_argument('-t', action="store",       dest="template_string",                   help="template, for n-grams will be separated on whitespace")
         parser.add_argument('-m', action="store",       dest="mode",              default='char', help="char - characters, word - words, prep - preprocessed")
+        parser.add_argument('-o', action="store",       dest="output_file",                       help="save output to provided file")
+        parser.add_argument('-e', action="store_true",  dest="only_encode",                       help="do not do fluctuation analysis only encode text as 0 and 1 sequence")
 
         parser.add_argument('-l',   action="store", dest="min_window_absolute",         type=int,                   help="starting window size")
         parser.add_argument('-lp',  action="store", dest="min_window_relative",         type=float, default=0.01,   help="starting size of window as percent from text size")
