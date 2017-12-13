@@ -67,13 +67,14 @@ def run(args):
     print('text legth: ',len(prep_text))
     print()
 
-    encoded_text = []
+    encoded_text = prep_text
 
-    if args['template_string'] is None:
-        encoded_text = fluctuation.encode_vocab(prep_text)
-    else:
-        template = ( args['template_string'] if args['case_sensative'] else args['template_string'].lower() ).split()
-        encoded_text = fluctuation.encode(prep_text, template)
+    if args['mode'] != 'prep':
+        if args['template_string'] is None:
+            encoded_text = fluctuation.encode_vocab(prep_text)
+        else:
+            template = ( args['template_string'] if args['case_sensative'] else args['template_string'].lower() ).split()
+            encoded_text = fluctuation.encode(prep_text, template)
 
     if args['only_encode']:
         if args['output_file']:
