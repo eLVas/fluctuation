@@ -1,1 +1,0 @@
-This scales to very large arrays. You can easily modify the above to sort in the method if you can't assume that the array is already sorted. It’s overkill for small arrays, but once they get large this is much faster.
