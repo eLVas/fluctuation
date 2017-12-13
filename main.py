@@ -36,7 +36,6 @@ def pick(d, keys):
 
 
 def run(args):
-
     print(args)
 
     text = args['text'] or read_whole_file(args['file'])
@@ -79,7 +78,7 @@ def analyse(text, mode, l, template, preprocessor_params):
 
     min_l = int(l['l_min'] or l_full*l['l_min_rel'])
     max_l = int(l['l_max'] or l_full*l['l_max_rel'])
-    increment = int(l['increment'] or (max_l-min_l)*l['increment_relative'])
+    increment = int(l['increment'] if l['increment'] is not None else (max_l-min_l)*l['increment_relative'])
 
     print('min_l: ', min_l)
     print('max_l: ', max_l)
@@ -97,6 +96,9 @@ def analyse(text, mode, l, template, preprocessor_params):
         lambda i, mean, std: print('{0:2d}\t{1:2.2f}\t{2:2.2f}'.format(i, mean, std))
     )
 
+    if len(res) < 3:
+        return res
+
     res_plot = list(zip(*res))
 
     popt = fluctuation.get_gamma(res_plot[0], res_plot[2])
@@ -109,6 +111,8 @@ def analyse(text, mode, l, template, preprocessor_params):
     plt.plot(tabl, fluctuation.cost_function(tabl, *popt), 'g--')
 
     plt.show()
+
+    return res
 
 
 if __name__ == '__main__':

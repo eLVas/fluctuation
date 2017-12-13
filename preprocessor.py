@@ -72,8 +72,7 @@ def restore_preprocessed(text, separators=False, punctuation=False, case_sensati
 preprocessors = {
     'char': prepare_char,
     'word': prepare_words,
-    'prep': restore_preprocessed,
-    'vocab': prepare_vocabluary
+    'prep': restore_preprocessed
 }
 
 
