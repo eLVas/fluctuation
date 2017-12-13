@@ -25,11 +25,12 @@ def encode_vocab(arr):
     voc = set()
     r = []
 
-    for w in text:
+    for w in arr:
         if w in voc:
             r.append(0)
         else:
             r.append(1)
+            voc.add(w)
 
     return r
 

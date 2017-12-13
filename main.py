@@ -56,11 +56,9 @@ def pick(d, keys):
 
 
 def run(args):
-    print(args)
+    # print(args)
 
     text = args['text'] or read_whole_file(args['file'])
-    template = ( args['template_string'] if args['case_sensative'] else args['template_string'].lower() ).split()
-
     p_params = pick(args, param_keys_map)
     l_params = pick(args, l_param_keys_map)
 
@@ -69,7 +67,13 @@ def run(args):
     print('text legth: ',len(prep_text))
     print()
 
-    encoded_text = fluctuation.encode(prep_text, template)
+    encoded_text = []
+
+    if args['template_string'] is None:
+        encoded_text = fluctuation.encode_vocab(prep_text)
+    else:
+        template = ( args['template_string'] if args['case_sensative'] else args['template_string'].lower() ).split()
+        encoded_text = fluctuation.encode(prep_text, template)
 
     if args['only_encode']:
         if args['output_file']:
@@ -77,7 +81,7 @@ def run(args):
 
         return encoded_text, None
 
-    result, gamma = analyse(encoded_text, args['mode'], l_params, template)
+    result, gamma = analyse(encoded_text, args['mode'], l_params)
 
     if args['output_file']:
         write_to_file(args['output_file'], result, False)
@@ -85,7 +89,7 @@ def run(args):
     return result, gamma
 
 
-def analyse(text, mode, l, template):
+def analyse(text, mode, l):
     l_full = len(text)
 
     min_l = int(l['l_min'] or l_full*l['l_min_rel'])
@@ -114,7 +118,6 @@ def analyse(text, mode, l, template):
     res_plot = list(zip(*res))
 
     popt = fluctuation.get_gamma(res_plot[0], res_plot[2])
-    print(popt)
     gamma = popt[0]
     print('\ngama: ', gamma)
 
