@@ -13,6 +13,9 @@ def remove_whitespaces(text):
 def remove_punctuation(text):
     return re.sub(r'[^\w\s]','',text)
 
+def remove_all_non_letters(text):
+    return ''.join([i for i in text if i.isalpha() or i == ' '])
+
 
 def prepare_words_break_by_sent(text, punctuation=False):
     arr = []
@@ -51,7 +54,20 @@ def prepare_words(text, separators=False, punctuation=False, case_sensative=Fals
     return prepare_words_break_by_sent(t, punctuation)
 
 
-def prepare_char(text, separators=False, punctuation=False, case_sensative=False):
+def prepare_chars(text, separators=False, punctuation=False, case_sensative=False):
+    t = text
+
+    t = remove_all_non_letters(t)
+
+    if not separators :
+        t = remove_whitespaces(t)
+
+    if not case_sensative :
+        t = t.lower()
+
+    return list(t)
+
+def prepare_symbols(text, separators=False, punctuation=False, case_sensative=False):
     t = text
     if not separators :
         t = remove_whitespaces(t)
@@ -70,7 +86,8 @@ def restore_preprocessed(text, separators=False, punctuation=False, case_sensati
 
 
 preprocessors = {
-    'char': prepare_char,
+    'char': prepare_chars,
+    'symb': prepare_symbols,
     'word': prepare_words,
     'prep': restore_preprocessed
 }
