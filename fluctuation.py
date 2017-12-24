@@ -86,8 +86,8 @@ def run(arr, min_l, max_l, increment, step=None, callback=None):
 
     return res
 
-def cost_function(x, a, b, c):
-    return c + b*x**a
+def cost_function(x, a, b):
+    return b*x**a
 
 def get_gamma(x,y):
     return curve_fit(cost_function, x, y, maxfev = 10000)[0]
