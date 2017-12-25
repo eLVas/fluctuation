@@ -26,8 +26,9 @@ l_param_keys_map = [
 def read_tsv(input_path):
     with open(input_path,'r') as tsvin:
         tsvin = csv.reader(tsvin, delimiter='\t')
-        print(tsvin)
-        return(list(tsvin))
+        data_raw = list(zip(*tsvin))
+        data = [list(map(int, data_raw[0])), list(map(float, data_raw[1])), list(map(float, data_raw[2]))]
+        return data
 
 def read_whole_file(input_path):
     text = ""
