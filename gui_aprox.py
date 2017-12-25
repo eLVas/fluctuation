@@ -15,20 +15,23 @@ def run(button):
     l = []
 
     data = main.read_tsv(props['file'])
+    popv = main.approx(data)
 
-    print(data)
+    print(popv)
 
-    popv = main.aprox(data)
+    if len(props['Output file']) > 0:
+        main.write_to_file(props['Output file'], [popv], False)
 
 
 def create_app_ui(app):
     # create a GUI variable called app
     app.setFont(18)
 
-    # -f file
     app.addLabel("l_file", "Input file")
     app.setLabelAlign("l_file", "left")
     app.addFileEntry("file")
+
+    app.addLabelEntry("Output file")
 
     # link the buttons to the function called press
     app.addButtons(["Calculate"], run)
