@@ -40,10 +40,10 @@ def prepare_words_flat(text, punctuation=False):
     return nltk.word_tokenize(t)
 
 
-def prepare_words(text, separators=False, punctuation=False, case_sensative=False):
+def prepare_words(text, separators=False, punctuation=False, case_sensitive=False):
     t = text
 
-    if not case_sensative :
+    if not case_sensitive :
         t = t.lower()
 
     # not breacking n-grams on sentance separators
@@ -54,7 +54,7 @@ def prepare_words(text, separators=False, punctuation=False, case_sensative=Fals
     return prepare_words_break_by_sent(t, punctuation)
 
 
-def prepare_chars(text, separators=False, punctuation=False, case_sensative=False):
+def prepare_chars(text, separators=False, punctuation=False, case_sensitive=False):
     t = text
 
     t = remove_all_non_letters(t)
@@ -62,12 +62,12 @@ def prepare_chars(text, separators=False, punctuation=False, case_sensative=Fals
     if not separators :
         t = remove_whitespaces(t)
 
-    if not case_sensative :
+    if not case_sensitive :
         t = t.lower()
 
     return list(t)
 
-def prepare_symbols(text, separators=False, punctuation=False, case_sensative=False):
+def prepare_symbols(text, separators=False, punctuation=False, case_sensitive=False):
     t = text
     if not separators :
         t = remove_whitespaces(t)
@@ -75,13 +75,13 @@ def prepare_symbols(text, separators=False, punctuation=False, case_sensative=Fa
     if not punctuation :
         t = remove_punctuation(t)
 
-    if not case_sensative :
+    if not case_sensitive :
         t = t.lower()
 
     return list(t)
 
 
-def restore_preprocessed(text, separators=False, punctuation=False, case_sensative=False):
+def restore_preprocessed(text, separators=False, punctuation=False, case_sensitive=False):
     return [int(c) for c in text]
 
 

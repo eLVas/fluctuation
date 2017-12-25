@@ -61,13 +61,18 @@ def write_to_file(output_path, data, sequence):
 def pick(d, keys):
     return {key or key_old: d[key_old] for key_old, key in keys }
 
+def separate_params(args):
+     p_params = pick(args, param_keys_map)
+     l_params = pick(args, l_param_keys_map)
 
-def run(args):
+     return p_params, l_params
+
+
+def run(args, visualize=True):
     # print(args)
 
     text = args['text'] or read_whole_file(args['file'])
-    p_params = pick(args, param_keys_map)
-    l_params = pick(args, l_param_keys_map)
+    p_params, l_params = separate_params(args)
 
     prep_text = preprocessor.prepare(text, args['mode'], **p_params)
 
@@ -89,15 +94,15 @@ def run(args):
 
         return encoded_text, None
 
-    result, gamma = analyse(encoded_text, args['mode'], l_params)
-
+    result, gamma = analyse(encoded_text, args['mode'], l_params, visualize)
+    print(args['output_file'])
     if args['output_file']:
         write_to_file(args['output_file'], result, False)
 
     return result, gamma
 
 
-def analyse(text, mode, l):
+def analyse(text, mode, l, visualize):
     l_full = len(text)
 
     min_l = int(l['l_min'] or l_full*l['l_min_rel'])
@@ -129,13 +134,14 @@ def analyse(text, mode, l):
     print(popt)
     gamma = popt[0]
     print('\ngama: ', gamma)
+    if visualize:
+        plt.plot(res_plot[0], res_plot[2])
+        print(res_plot[2])
 
-    plt.plot(res_plot[0], res_plot[2])
+        tabl = range(res_plot[0][0], res_plot[0][-1], int(abs(res_plot[0][0] - res_plot[0][-1])/1000))
+        plt.plot(tabl, fluctuation.cost_function(tabl, *popt), 'g--')
 
-    tabl = range(res_plot[0][0], res_plot[0][-1], int(abs(res_plot[0][0] - res_plot[0][-1])/1000))
-    plt.plot(tabl, fluctuation.cost_function(tabl, *popt), 'g--')
-
-    plt.show()
+        plt.show()
 
     return res, gamma
 
@@ -146,7 +152,7 @@ if __name__ == '__main__':
 
     def build_args_parser():
         parser = argparse.ArgumentParser(
-            description='This is a PyMOTW sample program',
+            description='main',
         )
 
         parser.add_argument('-i', action="store",       dest="text",                              help="input text")
@@ -161,12 +167,11 @@ if __name__ == '__main__':
         parser.add_argument('-lm',  action="store", dest="max_window_absolute",         type=int,                   help="maximum window size")
         parser.add_argument('-lmp', action="store", dest="max_window_relative",         type=float, default=0.05,    help="maximum size of window as percent from text size")
         parser.add_argument('-wi',  action="store", dest="window_increment_absolute",   type=int,                   help="window size increment step")
-        parser.add_argument('-wip',  action="store", dest="window_increment_relative",  type=float, default=0.1,    help="window size increment step")
+        parser.add_argument('-wip', action="store", dest="window_increment_relative",   type=float, default=0.1,    help="window size increment step")
         parser.add_argument('-ws',  action="store", dest="window_step",                 type=int,                   help="window step, default - the same as window size")
 
         parser.add_argument('-c', action="store_true", dest="case_sensitive",   help="case sensitive flag")
         parser.add_argument('-s', action="store_true", dest="separators",       help="include separators when matching n-grams, whitespace for characters mode and end of sentance for words mode")
-        parser.add_argument('-p', action="store_true", dest="punctuation",      help="remove punctuation")
 
         return parser
 

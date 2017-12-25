@@ -1,9 +1,9 @@
 # import the library
 from appJar import gui
-import main
+import run_all_vocab as main
 
 
-app = gui("Flunctuation analysis", "700x700")
+app = gui("Flunctuation analysis for all words", "700x700")
 
 def cast_str_to_none(val, parse_float=True):
     return (float(val) if parse_float else val) if len(val) > 0 else None
@@ -21,7 +21,7 @@ def run(button):
     main.run({
         "text": None,
         "file": props['file'],
-        "template_string": cast_str_to_none(props['Template string'], False),
+        "ngram": props['N-grams'],
         "mode": options['Modes'],
         "min_window_absolute": cast_str_to_none(props['Min(absolute)']),
         "min_window_relative": cast_str_to_none(props['Min(relative)']),
@@ -46,8 +46,8 @@ def create_app_ui(ap,modes):
     app.setLabelAlign("l_file", "left")
     app.addFileEntry("file")
 
-    # -t template_string
-    app.addLabelEntry("Template string")
+    # -n template_string
+    app.addLabelEntry("N-grams")
 
     # -m mode
     app.addLabelOptionBox("Modes", modes)
