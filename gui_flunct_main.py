@@ -10,13 +10,9 @@ def cast_str_to_none(val, parse_float=True):
 
 # handle button events
 def run(button):
-    print(button)
     props = app.getAllEntries()
     options = app.getAllOptionBoxes()
     flags = app.getAllCheckBoxes()
-    print(props)
-    print(options)
-    print(flags)
 
     main.run({
         "text": None,
@@ -32,7 +28,6 @@ def run(button):
         "window_step": cast_str_to_none(props['Step']),
         "case_sensitive": flags['Case sensitive'],
         "separators": flags['Separators'],
-        "punctuation": flags['Punctuation'],
         "output_file": props["Output file"],
         "only_encode": flags['Only encode']
     })
@@ -85,8 +80,6 @@ def create_app_ui(ap,modes):
         app.addCheckBox("Case sensitive")
         # -s separators
         app.addCheckBox("Separators")
-        # -p punctuation
-        app.addCheckBox("Punctuation")
 
     # -o output_file
     app.addLabelEntry("Output file")

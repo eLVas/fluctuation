@@ -10,13 +10,9 @@ def cast_str_to_none(val, parse_float=True):
 
 # handle button events
 def run(button):
-    print(button)
     props = app.getAllEntries()
     options = app.getAllOptionBoxes()
     flags = app.getAllCheckBoxes()
-    print(props)
-    print(options)
-    print(flags)
 
     main.run({
         "text": None,
@@ -27,14 +23,17 @@ def run(button):
         "min_window_relative": cast_str_to_none(props['Min(relative)']),
         "max_window_absolute": cast_str_to_none(props['Max(absolute)']),
         "max_window_relative": cast_str_to_none(props['Max(relative)']),
+        "min_dictionary_absolute": cast_str_to_none(props['Min_frequency(absolute)']),
+        "min_dictionary_relative": cast_str_to_none(props['Min_frequency(relative)']),
+        "max_dictionary_absolute": cast_str_to_none(props['Max_frequency(absolute)']),
+        "max_dictionary_relative": cast_str_to_none(props['Max_frequency(relative)']),
         "window_increment_absolute": cast_str_to_none(props['Increment(absolute)']),
         "window_increment_relative": cast_str_to_none(props['Increment(relative)']),
         "window_step": cast_str_to_none(props['Step']),
         "case_sensitive": flags['Case sensitive'],
         "separators": flags['Separators'],
-        "punctuation": flags['Punctuation'],
         "output_file": props["Output file"],
-        "only_encode": flags['Only encode']
+        "only_encode": False
     })
 
 def create_app_ui(ap,modes):
@@ -52,8 +51,18 @@ def create_app_ui(ap,modes):
     # -m mode
     app.addLabelOptionBox("Modes", modes)
 
-    # -e only_encode
-    app.addCheckBox("Only encode")
+    #window size
+    with app.labelFrame("Dictionary"):
+        # -l min_window_absolute
+        app.addLabelEntry("Min_frequency(absolute)")
+        # -lp min_window_relative
+        app.addLabelEntry("Min_frequency(relative)")
+        app.setEntry("Min_frequency(relative)", "0.001")
+        # -lm max_window_absolute
+        app.addLabelEntry("Max_frequency(absolute)")
+        # -lmp max_window_relative
+        app.addLabelEntry("Max_frequency(relative)")
+        app.setEntry("Max_frequency(relative)", "0.01")
 
     #window size
     with app.labelFrame("Window size"):
@@ -85,8 +94,6 @@ def create_app_ui(ap,modes):
         app.addCheckBox("Case sensitive")
         # -s separators
         app.addCheckBox("Separators")
-        # -p punctuation
-        app.addCheckBox("Punctuation")
 
     # -o output_file
     app.addLabelEntry("Output file")

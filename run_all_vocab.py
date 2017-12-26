@@ -8,11 +8,18 @@ import stats
 import main
 
 def run(args):
+
+
+
     text = args['text'] or main.read_whole_file(args['file'])
     p_params, l_params = main.separate_params(args)
     prep_text = preprocessor.prepare(text, args['mode'], **p_params)
+
+    min_d = (args['min_dictionary_absolute'] or 0)/len(prep_text) or args['min_dictionary_relative']
+    max_d = (args['max_dictionary_absolute'] or 0)/len(prep_text) or args['max_dictionary_relative']
+
     freq = stats.relative_frequency(prep_text)
-    vocab = [k for k,v in freq.items() if v >= 0.01]
+    vocab = [k for k,v in freq.items() if v >= min_d and v <= max_d]
 
     res = []
 
@@ -24,7 +31,7 @@ def run(args):
         _, gamma = main.run(args, False)
         res.append((v, gamma))
 
-    if output_file is not None:
+    if output_file is not None and len(output_file) > 0:
         main.write_to_file(output_file, res, False)
 
 
@@ -42,6 +49,11 @@ if __name__ == '__main__':
         parser.add_argument('-m', action="store",       dest="mode",                default='char', help="char - characters, word - words, prep - preprocessed")
         parser.add_argument('-o', action="store",       dest="output_file",                         help="save output to provided file")
         parser.add_argument('-e', action="store_true",  dest="only_encode",                         help="do not do fluctuation analysis only encode text as 0 and 1 sequence")
+
+        parser.add_argument('-d',   action="store", dest="min_dictionary_absolute",     type=int,                   help="minimal number of ocurances for word")
+        parser.add_argument('-dp',  action="store", dest="min_dictionary_relative",     type=float, default=0.001,  help="minimal relative frequency for word")
+        parser.add_argument('-dm',   action="store", dest="max_dictionary_absolute",    type=int,                   help="maximum number of ocurances for word")
+        parser.add_argument('-dmp',  action="store", dest="max_dictionary_relative",    type=float, default=0.01,   help="maximum relative frequency for word")
 
         parser.add_argument('-l',   action="store", dest="min_window_absolute",         type=int,                   help="starting window size")
         parser.add_argument('-lp',  action="store", dest="min_window_relative",         type=float, default=0.01,   help="starting size of window as percent from text size")

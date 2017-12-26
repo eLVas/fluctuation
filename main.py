@@ -9,8 +9,7 @@ import fluctuation
 
 param_keys_map = [
     ('case_sensitive', None),
-    ('separators', None),
-    ('punctuation', None)
+    ('separators', None)
 ]
 
 l_param_keys_map = [
@@ -136,7 +135,6 @@ def analyse(text, mode, l, visualize):
     print('\ngama: ', gamma)
     if visualize:
         plt.plot(res_plot[0], res_plot[2])
-        print(res_plot[2])
 
         tabl = range(res_plot[0][0], res_plot[0][-1], int(abs(res_plot[0][0] - res_plot[0][-1])/1000))
         plt.plot(tabl, fluctuation.cost_function(tabl, *popt), 'g--')
