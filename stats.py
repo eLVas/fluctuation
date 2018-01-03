@@ -1,5 +1,3 @@
-import preprocessor
-
 def vocab(text_arr):
     return list(set(text_arr))
 

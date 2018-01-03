@@ -1,15 +1,10 @@
-import os
 import argparse
-import matplotlib.pyplot as plt
 
 import preprocessor
-import fluctuation
 import stats
 import main
 
 def run(args):
-
-
 
     text = args['text'] or main.read_whole_file(args['file'])
     p_params, l_params = main.separate_params(args)

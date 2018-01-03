@@ -1,5 +1,5 @@
 import nltk
-import string
+nltk.download('punkt')
 import re
 
 def remove_new_line_chars(text):
