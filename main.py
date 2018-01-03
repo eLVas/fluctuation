@@ -48,7 +48,7 @@ def write_tab_separated(file, data, header=None):
         file.write('\t'.join(map(str,row)) + '\n')
 
 
-def write_to_file(output_path, data, sequence):
+def write_to_file(output_path, data, sequence):g
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     with open(output_path, 'w+') as f:
         if sequence:
@@ -156,7 +156,7 @@ if __name__ == '__main__':
         parser.add_argument('-i', action="store",       dest="text",                              help="input text")
         parser.add_argument('-f', action="store",       dest="file",                              help="path to file that should be used as input")
         parser.add_argument('-t', action="store",       dest="template_string",                   help="template, for n-grams will be separated on whitespace")
-        parser.add_argument('-m', action="store",       dest="mode",              default='char', help="char - characters, word - words, prep - preprocessed")
+        parser.add_argument('-m', action="store",       dest="mode",              default='char', help="alph - only letters, symb - all symbols, word - words, prep - preprocessed")
         parser.add_argument('-o', action="store",       dest="output_file",                       help="save output to provided file")
         parser.add_argument('-e', action="store_true",  dest="only_encode",                       help="do not do fluctuation analysis only encode text as 0 and 1 sequence")
 

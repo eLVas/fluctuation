@@ -106,6 +106,6 @@ def create_app_ui(ap,modes):
     app.go()
 
 
-modes = ['char', 'symb', 'word', 'prep']
+modes = ['alph', 'symb', 'word', 'prep']
 
 create_app_ui(app, modes)

@@ -86,7 +86,7 @@ def restore_preprocessed(text, separators=False, punctuation=False, case_sensiti
 
 
 preprocessors = {
-    'char': prepare_chars,
+    'alph': prepare_chars,
     'symb': prepare_symbols,
     'word': prepare_words,
     'prep': restore_preprocessed
