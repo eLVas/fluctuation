@@ -48,7 +48,7 @@ def write_tab_separated(file, data, header=None):
         file.write('\t'.join(map(str,row)) + '\n')
 
 
-def write_to_file(output_path, data, sequence):g
+def write_to_file(output_path, data, sequence):
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     with open(output_path, 'w+') as f:
         if sequence:
@@ -94,9 +94,12 @@ def run(args, visualize=True):
         return encoded_text, None
 
     result, gamma = analyse(encoded_text, args['mode'], l_params, visualize)
-    print(args['output_file'])
+
     if args['output_file']:
         write_to_file(args['output_file'], result, False)
+
+    if args['aprox_output_file']:
+        write_to_file(args['aprox_output_file'], [gamma], False)
 
     return result, gamma
 
@@ -141,7 +144,7 @@ def analyse(text, mode, l, visualize):
 
         plt.show()
 
-    return res, gamma
+    return res, popt
 
 def approx(data):
     return fluctuation.get_gamma(data[0], data[2])
@@ -158,6 +161,7 @@ if __name__ == '__main__':
         parser.add_argument('-t', action="store",       dest="template_string",                   help="template, for n-grams will be separated on whitespace")
         parser.add_argument('-m', action="store",       dest="mode",              default='char', help="alph - only letters, symb - all symbols, word - words, prep - preprocessed")
         parser.add_argument('-o', action="store",       dest="output_file",                       help="save output to provided file")
+        parser.add_argument('-ao', action="store",      dest="aprox_output_file",                       help="save output to provided file")
         parser.add_argument('-e', action="store_true",  dest="only_encode",                       help="do not do fluctuation analysis only encode text as 0 and 1 sequence")
 
         parser.add_argument('-l',   action="store", dest="min_window_absolute",         type=int,                   help="starting window size")

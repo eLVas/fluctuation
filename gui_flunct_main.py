@@ -29,6 +29,7 @@ def run(button):
         "case_sensitive": flags['Case sensitive'],
         "separators": flags['Separators'],
         "output_file": props["Output file"],
+        "aprox_output_file": props["Aprox output file"],
         "only_encode": flags['Only encode']
     })
 
@@ -83,6 +84,9 @@ def create_app_ui(ap,modes):
 
     # -o output_file
     app.addLabelEntry("Output file")
+
+    # -o output_file
+    app.addLabelEntry("Aprox output file")
 
 
     # link the buttons to the function called press
