@@ -13,7 +13,7 @@ def run(args):
     min_d = (args['min_dictionary_absolute'] or 0)/len(prep_text) or args['min_dictionary_relative']
     max_d = (args['max_dictionary_absolute'] or 0)/len(prep_text) or args['max_dictionary_relative']
 
-    freq = stats.relative_frequency(prep_text)
+    freq = stats.relative_frequency(prep_text, args['ngram'])
     vocab = [k for k,v in freq.items() if v >= min_d and v <= max_d]
 
     res = []
@@ -23,6 +23,7 @@ def run(args):
     for v in vocab:
         args['template_string'] = v
         args['output_file'] = None
+        args['aprox_output_file'] = None
         _, gamma = main.run(args, False)
         res.append((v, gamma))
 

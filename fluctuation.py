@@ -1,14 +1,7 @@
 import numpy as np
 from scipy.optimize import curve_fit
 
-def test(arr, i, v, match):
-    if type(match) != list:
-        return v == match
-    else:
-        n = len(match)
-        if len(arr) < i+n:
-            return False
-        return arr[i:i+n] == match
+import stats
 
 def encode(arr, match):
     res = []
@@ -16,7 +9,7 @@ def encode(arr, match):
         if type(v) == list:
             res += encode(v, match)
         else:
-            m = test(arr, i, v, match)
+            m = stats.test(arr, i, v, match)
             res.append(int(m))
 
     return res

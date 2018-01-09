@@ -17,7 +17,7 @@ def run(button):
     main.run({
         "text": None,
         "file": props['file'],
-        "ngram": props['N-grams'],
+        "ngram": int(props['N-grams']),
         "mode": options['Modes'],
         "min_window_absolute": cast_str_to_none(props['Min(absolute)']),
         "min_window_relative": cast_str_to_none(props['Min(relative)']),
@@ -47,6 +47,7 @@ def create_app_ui(ap,modes):
 
     # -n template_string
     app.addLabelEntry("N-grams")
+    app.setEntry("N-grams", "1")
 
     # -m mode
     app.addLabelOptionBox("Modes", modes)
